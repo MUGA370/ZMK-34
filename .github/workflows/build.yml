@@ -21,21 +21,20 @@ jobs:
 
       - name: Clone ZMK into app
         run: |
-          rm -rf app
           git clone https://github.com/zmkfirmware/zmk.git app
-          ls -la app
+          ls app
 
       - name: Init West
         run: |
           west init -l app
           west update
 
-      - name: Build firmware
+      - name: Build firmware (nice_nano_v2)
         run: |
           west build -s app -b nice_nano_v2 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
-      - name: Upload UF2
+      - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
-          name: firmware
+          name: zmk-34_nice_nano_v2
           path: build/zephyr/zmk.uf2
