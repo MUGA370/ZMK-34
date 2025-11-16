@@ -19,12 +19,13 @@ jobs:
           sudo apt install -y python3-pip cmake ninja-build g++ wget
           pip3 install west
 
-      - name: Clone ZMK into app
+      - name: Clone ZMK into app/
         run: |
+          rm -rf app
           git clone https://github.com/zmkfirmware/zmk.git app
-          ls app
+          ls -la app
 
-      - name: Init West
+      - name: Init West and update modules
         run: |
           west init -l app
           west update
