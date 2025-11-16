@@ -1,0 +1,8 @@
+file_format: '1'
+id: zmk-34
+name: zmk-34
+type: shield
+url: https://github.com/muga370/zmk-34
+requires: [pro_micro]
+features:
+  - keys
