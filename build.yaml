@@ -1,17 +1,39 @@
-# This file generates the GitHub Actions matrix
-# For simple board + shield combinations, add them
-# to the top level board and shield arrays, for more
-# control, add individual board + shield combinations to
-# the `include` property, e.g:
-#
-# board: [ "nice_nano_v2" ]
-# shield: [ "corne_left", "corne_right" ]
-# include:
-#   - board: bdn9_rev2
-#   - board: nice_nano_v2
-#     shield: reviung41
-#
----
-include:
-  - board: nice_nano_v2
-    shield: zmk-34
+name: ZMK Firmware Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout config repo
+        uses: actions/checkout@v4
+
+      - name: Install West + build deps
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip cmake ninja-build g++ wget
+          pip3 install west
+
+      - name: Clone official ZMK into app/
+        run: |
+          git clone https://github.com/zmkfirmware/zmk.git app
+
+      - name: Init West + Zephyr
+        run: |
+          west init -l app
+          west update
+
+      - name: Build ZMK firmware (nice_nano_v2 + shield zmk-34)
+        run: |
+          west build -s app -b nice_nano_v2 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
+
+      - name: Upload UF2 firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: zmk-34-nice_nano_v2
+          path: build/zephyr/zmk.uf2
