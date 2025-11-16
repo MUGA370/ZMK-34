@@ -19,7 +19,11 @@ jobs:
           sudo apt install -y python3-pip cmake ninja-build g++ wget
           pip3 install west
 
-      - name: Init Zephyr + ZMK
+      - name: Clone ZMK app
+        run: |
+          git clone https://github.com/zmkfirmware/zmk.git app
+
+      - name: Init West + Zephyr
         run: |
           west init -l app
           west update
@@ -28,9 +32,8 @@ jobs:
         run: |
           west build -s app -b nice_nano -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
-      - name: Upload UF2 artifact
+      - name: Upload UF2
         uses: actions/upload-artifact@v4
         with:
           name: firmware
           path: build/zephyr/zmk.uf2
-
