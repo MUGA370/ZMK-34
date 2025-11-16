@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install West + deps
         run: |
@@ -27,9 +27,9 @@ jobs:
       - name: Build firmware (nice!nano)
         run: |
           west build -s app -b nice_nano -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
-      
-      - name: Upload UF2
-        uses: actions/upload-artifact@v3
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
         with:
           name: firmware
           path: build/zephyr/zmk.uf2
