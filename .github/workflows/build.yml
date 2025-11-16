@@ -19,19 +19,27 @@ jobs:
           sudo apt install -y python3-pip cmake ninja-build g++ wget
           pip3 install west
 
+      - name: Debug workspace
+        run: |
+          echo "GITHUB_WORKSPACE:"
+          pwd
+          ls -la
+
       - name: Clone ZMK into app/
         run: |
-          rm -rf app
-          git clone https://github.com/zmkfirmware/zmk.git app
-          ls -la app
+          rm -rf "${GITHUB_WORKSPACE}/app"
+          git clone https://github.com/zmkfirmware/zmk.git "${GITHUB_WORKSPACE}/app"
+          ls -la "${GITHUB_WORKSPACE}/app"
 
       - name: Init West and update modules
         run: |
+          cd "${GITHUB_WORKSPACE}"
           west init -l app
           west update
 
       - name: Build firmware (nice_nano_v2)
         run: |
+          cd "${GITHUB_WORKSPACE}"
           west build -s app -b nice_nano_v2 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
 
       - name: Upload firmware
